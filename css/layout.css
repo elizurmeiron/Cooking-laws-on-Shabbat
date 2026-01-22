@@ -1,0 +1,248 @@
+/* ========================================
+   Layout & Structure Styles
+   ======================================== */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    color: var(--text-primary);
+    direction: var(--text-direction, rtl);
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+    -webkit-tap-highlight-color: transparent;
+    /* Remove tap highlight on iOS */
+    touch-action: manipulation;
+    /* Disable double-tap zoom */
+}
+
+.slideshow-container {
+    max-width: 1000px;
+    position: relative;
+    margin: auto;
+    background: var(--bg-white);
+    box-shadow: var(--shadow-lg);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Navigation areas with visual indication */
+.slideshow-container::before,
+.slideshow-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 15%;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Navigation area to previous slide */
+.slideshow-container::before {
+    inset-inline-end: 0;
+    /* Right in RTL, left in LTR */
+    background: linear-gradient(to inline-start, var(--nav-overlay), transparent);
+    cursor: pointer;
+}
+
+/* Navigation area to next slide */
+.slideshow-container::after {
+    inset-inline-start: 0;
+    /* Left in RTL, right in LTR */
+    background: linear-gradient(to inline-end, var(--nav-overlay), transparent);
+    cursor: pointer;
+}
+
+body.show-nav-prev .slideshow-container::before {
+    opacity: 1;
+}
+
+body.show-nav-next .slideshow-container::after {
+    opacity: 1;
+}
+
+/* Navigation arrows */
+.nav-arrow-prev,
+.nav-arrow-next {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3em;
+    color: var(--arrow-color);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s, color 0.3s;
+    z-index: 1000;
+}
+
+/* Arrow to previous slide - always on physical right in RTL */
+.rtl-mode .nav-arrow-prev {
+    right: calc(50% - 500px + 20px);
+    /* Center of screen minus half of max-width plus padding */
+}
+
+/* Arrow to next slide - always on physical left in RTL */
+.rtl-mode .nav-arrow-next {
+    left: calc(50% - 500px + 20px);
+    /* Center of screen minus half of max-width plus padding */
+}
+
+/* Arrow to previous slide - always on physical left in LTR */
+.ltr-mode .nav-arrow-prev {
+    left: calc(50% - 500px + 20px);
+    /* Center of screen minus half of max-width plus padding */
+}
+
+/* Arrow to next slide - always on physical right in LTR */
+.ltr-mode .nav-arrow-next {
+    right: calc(50% - 500px + 20px);
+    /* Center of screen minus half of max-width plus padding */
+}
+
+/* On narrow screens, keep arrows at screen edges */
+@media (max-width: 1040px) {
+
+    .rtl-mode .nav-arrow-prev,
+    .ltr-mode .nav-arrow-next {
+        right: 20px;
+    }
+
+    .rtl-mode .nav-arrow-next,
+    .ltr-mode .nav-arrow-prev {
+        left: 20px;
+    }
+}
+
+.nav-arrow-prev::before {
+    content: var(--arrow-prev);
+}
+
+.nav-arrow-next::before {
+    content: var(--arrow-next);
+}
+
+body.show-nav-prev .nav-arrow-prev {
+    opacity: 1;
+}
+
+body.show-nav-next .nav-arrow-next {
+    opacity: 1;
+}
+
+.slide {
+    display: none;
+    padding: 40px;
+    min-height: 600px;
+    animation: fadeIn 0.5s;
+}
+
+.slide.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.slide h1 {
+    color: var(--text-tertiary);
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 15px;
+}
+
+.slide h2 {
+    color: var(--text-secondary);
+    font-size: 2em;
+    margin-bottom: 25px;
+    border-right: 5px solid var(--primary-color);
+    padding-right: 15px;
+}
+
+.slide h3 {
+    color: var(--text-secondary);
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    margin-top: 25px;
+    font-weight: bold;
+    padding-right: 15px;
+    border-right: 4px solid var(--primary-color);
+}
+
+.content {
+    font-size: 1.1em;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+.navigation-controls {
+    text-align: center;
+    padding: 12px 10px;
+    background: var(--bg-lighter-gray);
+    border-top: 1px solid #e2e8f0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(calc(100% - 45px));
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    max-height: 250px;
+    overflow: hidden;
+}
+
+.navigation-controls.visible {
+    transform: translateY(0);
+}
+
+/* Collapsed state - show only slide counter */
+.navigation-controls:not(.visible) .nav-btn,
+.navigation-controls:not(.visible) .theme-selector,
+.navigation-controls:not(.visible) .mode-selector {
+    display: none;
+}
+
+/* Tap area to expand navigation on mobile */
+.navigation-controls::before {
+    content: '▲ ניווט ▲';
+    display: block;
+    font-size: 0.85em;
+    color: var(--text-muted);
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.navigation-controls.visible::before {
+    content: '▼';
+    font-size: 0.75em;
+}
+
+.slide-counter {
+    text-align: center;
+    color: var(--text-muted);
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.split-content {
+    display: flex;
+    gap: 20px;
+}
+
+.split-content>div {
+    flex: 1;
+}
